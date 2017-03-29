@@ -135,7 +135,7 @@ def get_match(item_ID, table_of_angles, cart):
 	list_of_angles = []
 
 	for item, angle in item_angles.items():
-		if float(angle) <= 90 and int(item) not in cart:
+		if float(angle) < 90 and item not in cart:
 			list_of_angles.append(angle)
 
 	if list_of_angles != []:
@@ -144,9 +144,14 @@ def get_match(item_ID, table_of_angles, cart):
 			if angle == minimum_angle:
 				return item, angle
 	else:
-		return 'No Match'
+		return False
 
-def get_all_matches:
+def order_list(match_dict):
+
+	match_list = sorted(match_dict, key=lambda x: match_dict[x])
+
+	return match_list
+
 
 		
 
@@ -155,9 +160,10 @@ def get_recommendation(history, queries):
 
 
 	history = read_file(history)
-
-
 	history = str_to_list(history)
+
+	queries = read_file(queries)
+	queries_list = str_to_list(queries)
 
 
 	customer_histories = build_purchase_history_table(history)
@@ -171,7 +177,34 @@ def get_recommendation(history, queries):
 	average_angle = get_average_angle(all_angles)
 	print("Average angle: " + str(average_angle))
 
-	print(get_match(1, all_angles, [1, 2]))
+	counter = 0
+
+
+	for i in queries_list:
+
+		cart = i 
+		matches = {}
+
+		print('Shopping cart: ' + str(queries[counter]))
+
+		for j in i:
+			match = get_match(j, all_angles, cart)
+			if not match:
+				print('Item: ' + str(j) + ' no match')
+			else:
+				print('Item: ' + str(j) + '; match: ' + match[0] + '; angle: ' + match[1])
+				matches[match[0]] = match[1]
+
+		recommendation_list = order_list(matches)
+
+		list_to_string = ""
+
+		for i in recommendation_list:
+			list_to_string +=( " " + i )
+
+		print("Recommend:" + list_to_string)
+		counter += 1
+	
 
 
 
